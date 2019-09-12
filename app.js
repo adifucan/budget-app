@@ -26,6 +26,32 @@ var budgetController = (function () {
         }
     };
 
+    return {
+        addItem: function (type, desc, value) {
+            var newItem, ID;
+
+            // Create new ID
+            // ID = last ID + 1 or 0 if empty
+            ID = data.allItems[type].length > 0 ? data.allItems[type][data.allItems[type].length - 1].id + 1 : 0;
+
+            // Create new item based on 'exp' or 'inc' type
+            if (type === 'exp') {
+                newItem = new Expense(ID, desc, value);
+            } else if (type === 'inc') {
+                newItem = new Income(ID, desc, value);
+            }
+
+            // push new item to data structure
+            data.allItems[type].push(newItem);
+
+            return newItem;
+        },
+
+        testing: function () {
+            console.log(data);
+        }
+    };
+
 })();
 
 // UI CONTROLLER
@@ -41,7 +67,7 @@ var UIController = (function () {
     return {
         getInput: function () {
             return {
-                type: document.querySelector(DOMStrings.inputType).value,
+                type: document.querySelector(DOMStrings.inputType).value, // will be either exp or inc
                 description: document.querySelector(DOMStrings.inputDescription).value,
                 value: document.querySelector(DOMStrings.inputValue).value
             }
@@ -69,13 +95,13 @@ var controller = (function (budgetCtrl, UICtrl) {
     };
 
     var controllAddItem = function () {
+        var input, newItem;
 
         // 1. get field input data
-        const input = UICtrl.getInput();
-
-        console.log(input);
+        input = UICtrl.getInput();
 
         // 2. Add item to the budget controller
+        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
         // 3. Add item to the UI
 
