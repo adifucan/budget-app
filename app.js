@@ -192,16 +192,16 @@ var UIController = (function() {
 
         // display budget with income/expenses/percentage after adding item
         displayBudget: function(obj) {
-            // update  budget
+            // 1. Update  budget
             document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
 
-            // update income
+            // 2. Update income
             document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
 
-            // update expenses
+            // 3. Update expenses
             document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
 
-            // update percentage
+            // 4. Update percentage
             if (obj.percentage > 0) {
                 document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
             } else {
@@ -245,24 +245,37 @@ var controller = (function(budgetCtrl, UICtrl) {
         UICtrl.displayBudget(budget);
     };
 
+    var updatePercentages = function() {
+
+        // 1. Calculate percentages
+
+        // 2. Read percentages from the budget controller
+
+        // 3. Update the UI with new percentages
+
+    };
+
     var ctrlAddItem = function() {
         var input, newItem;
 
-        // get field input data
+        // 1. get field input data
         input = UICtrl.getInput();
 
         if (input.description.length !== "" && !isNaN(input.value) && input.value > 0) {
-            // Add item to the budget controller
+            // 2. Add item to the budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-            // Add item to the UI
+            // 3. Add item to the UI
             UICtrl.addListItem(newItem, input.type);
 
-            // Clear fields
+            // 4. Clear fields
             UICtrl.clearFields();
 
-            // Calculate and update budget
+            // 5. Calculate and update budget
             updateBudget();
+
+            // 6. Calculate and update percentages
+            updatePercentages();
         }
     };
 
@@ -276,14 +289,17 @@ var controller = (function(budgetCtrl, UICtrl) {
             type = splitID[0];
             ID = parseInt(splitID[1]);
 
-            // Delete item from data structure
+            // 1. Delete item from data structure
             budgetCtrl.deleteItem(type, ID);
 
-            // Delete item from UI
+            // 2. Delete item from UI
             UICtrl.deleteListItem(itemID);
 
-            // Update and show new budget
+            // 3. Update and show new budget
             updateBudget();
+
+            // 4. Calculate and update percentages
+            updatePercentages();
         }
     };
 
