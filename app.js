@@ -152,6 +152,35 @@ var UIController = (function() {
         expensesPercLabel: '.item__percentage'
     };
 
+    var formatNumber = function(num, type) {
+        var numSplit, int, dec;
+
+        /**
+         * + or - before number
+         * exactly 2 decimal points
+         * comma separates thousand
+         *
+         * 2310.4567 -> 2,310.46
+         * 2000 -> 2,000.00
+         */
+
+        num = Math.abs(num);
+        num = num.toFixed(2);
+
+        numSplit = num.split('.')
+
+        int = numSplit[0];
+
+        if (int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+        }
+
+        dec = numSplit[1];
+
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+
+    };
+
     return {
         getInput: function() {
             return {
@@ -193,7 +222,7 @@ var UIController = (function() {
             // Replace placeholder text with some actual data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
             // Insert HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -221,14 +250,18 @@ var UIController = (function() {
 
         // display budget with income/expenses/percentage after adding item
         displayBudget: function(obj) {
+            var type;
+
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+
             // 1. Update  budget
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget, type);
 
             // 2. Update income
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
 
             // 3. Update expenses
-            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
 
             // 4. Update percentage
             if (obj.percentage > 0) {
